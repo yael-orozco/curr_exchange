@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let conversion = convert(Number(event.target.value), selectedCurrency, true);
         document.getElementById('czkInput').value = Math.round(conversion * 100) / 100;
     })
+    document.addEventListener('DOMContentLoaded', fillBgCanvas(), false);
 }, false);
 
 let receivedData;
@@ -28,17 +29,18 @@ function setCurrencyOptions(){
             newOption.innerHTML = receivedData.data[i].country_label + ' - ' + receivedData.data[i].curr_label + ' (' + receivedData.data[i].code + ')';
             let dropdownMenu = document.getElementById('currencies');
             dropdownMenu.appendChild(newOption);
-            let currencyOptions = document.getElementById('currencies');
-
-            currencyOptions.addEventListener('change', event => {
-                let currencyLabel = document.getElementById('curLabel');
-                currencyLabel.innerHTML = event.target.value + ':';
-
-                let selectedCurrency = document.getElementById('currencies').value;
-                let conversion = convert(Number(document.getElementById('czkInput').value), selectedCurrency, false);
-                document.getElementById('selectedCurInput').value = Math.round(conversion * 100) / 100;
-            })
         }
+        let currencyOptions = document.getElementById('currencies');
+        currencyOptions.addEventListener('input', function(event){
+            let currencyLabel = document.getElementById('curLabel');
+            currencyLabel.innerHTML = event.target.value + ':';
+
+            let selectedCurrency = document.getElementById('currencies').value;
+            let conversion = convert(Number(document.getElementById('czkInput').value), selectedCurrency, false);
+            document.getElementById('selectedCurInput').value = Math.round(conversion * 100) / 100;
+
+            drawGraphic();
+        })
     }
 
     xhttp.open('GET', scriptURL, true);
@@ -66,13 +68,30 @@ function convert(amount, targetCurrency, toCZK){
         return amount/curRate*unit;
     }
     else{
-        return amount*curRate;
+        return amount*curRate/unit;
     }
     
 }
 
-function convertToCZK(amount, sourceCurrency){
-    fetchExchangeData();
-    
+function fillBgCanvas(){
+    let canvas = document.getElementById('myCanvas');
+    let context = canvas.getContext('2d');
+    context.moveTo(0, 0);
+    context.fillStyle = "#d8e6db";
+    context.fillRect(0, 0, canvas.width, canvas.height);
 }
 
+function drawGraphic(currency){
+    fillBgCanvas();
+
+    let canvas = document.getElementById('myCanvas');
+    let context = canvas.getContext('2d');
+    context.beginPath();
+    context.moveTo(20,230);
+    for(let i = 0; i < 5; i++){
+        let rndNumber = Math.floor(Math.random() * 210) + 20;
+        context.lineTo(52*(i+1),rndNumber);
+    }
+
+    context.stroke();
+}

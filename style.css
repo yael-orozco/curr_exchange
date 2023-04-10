@@ -34,3 +34,11 @@ label{
 label{
     width: 50px
 }
+#canvasDiv{
+    width: fit-content;
+    margin: auto;
+    margin-top: 100px;
+}
+#myCanvas{
+    border: 3px solid;
+}
